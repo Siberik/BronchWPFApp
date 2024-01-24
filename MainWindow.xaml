@@ -18,7 +18,7 @@
                 <Button Content="Выбрать папку" Click="BrowseButton_Click"/>
             </StackPanel>
 
-            <HelixToolkit:HelixViewport3D x:Name="viewPort" Grid.Row="1" Background="White"/>
+            <HelixToolkit:HelixViewport3D x:Name="viewPort" Grid.Row="1" Background="WhiteSmoke"/>
         </Grid>
     </Grid>
 </Window>
