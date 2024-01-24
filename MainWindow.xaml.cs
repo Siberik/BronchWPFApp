@@ -16,17 +16,23 @@ namespace BronchWPFApp
         public MainWindow()
         {
             InitializeComponent();
+            SetupViewport();
         }
 
-        private void BrowseButton_Click(object sender, RoutedEventArgs e)
+        private void SetupViewport()
         {
-            var dialog = new System.Windows.Forms.FolderBrowserDialog();
+            // Используем DefaultLights для автоматического добавления света
+            viewPort.Children.Add(new DefaultLights());
 
-            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            // Настроим камеру
+            PerspectiveCamera camera = new PerspectiveCamera
             {
-                string folderPath = dialog.SelectedPath;
-                LoadDicomFiles(folderPath);
-            }
+                Position = new Point3D(0, 0, 5),
+                LookDirection = new Vector3D(0, 0, -1),
+                UpDirection = new Vector3D(0, 1, 0),
+                FieldOfView = 60
+            };
+            viewPort.Camera = camera;
         }
 
         private void LoadDicomFiles(string folderPath)
@@ -47,25 +53,15 @@ namespace BronchWPFApp
                     var meshBuilder = new MeshBuilder();
                     meshBuilder.AddBox(new Point3D(0, 0, 0), image.Width, image.Height, 1);
 
-                    var bitmapBytes = image.RenderImage().As<byte[]>();
+                    var material = new DiffuseMaterial(Brushes.Blue); // Замените на свой материал
 
-                    using (var stream = new MemoryStream(bitmapBytes))
+                    var geometryModel3D = new GeometryModel3D
                     {
-                        var writeableBitmap = new WriteableBitmap(image.Width, image.Height, 96, 96, PixelFormats.Bgra32, null);
-                        writeableBitmap.Lock();
-                        writeableBitmap.WritePixels(new Int32Rect(0, 0, image.Width, image.Height), bitmapBytes, image.Width * 4, 0);
-                        writeableBitmap.Unlock();
+                        Geometry = meshBuilder.ToMesh(),
+                        Material = material
+                    };
 
-                        var material = new DiffuseMaterial(new ImageBrush(writeableBitmap));
-
-                        var geometryModel3D = new GeometryModel3D
-                        {
-                            Geometry = meshBuilder.ToMesh(),
-                            Material = material
-                        };
-
-                        modelGroup.Children.Add(geometryModel3D);
-                    }
+                    modelGroup.Children.Add(geometryModel3D);
                 }
 
                 var modelVisual3D = new ModelVisual3D { Content = modelGroup };
@@ -77,5 +73,15 @@ namespace BronchWPFApp
             }
         }
 
+        private void BrowseButton_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new System.Windows.Forms.FolderBrowserDialog();
+
+            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                string folderPath = dialog.SelectedPath;
+                LoadDicomFiles(folderPath);
+            }
+        }
     }
 }
