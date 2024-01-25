@@ -1,11 +1,11 @@
-﻿using System.IO;
+﻿using FellowOakDicom;
+using HelixToolkit.Wpf;
+using System;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
-using HelixToolkit.Wpf;
-using FellowOakDicom.Imaging;
-using FellowOakDicom;
 
 namespace BronchWPFApp
 {
@@ -30,11 +30,15 @@ namespace BronchWPFApp
             {
                 viewPort.Children.Clear();
 
+                var modelGroup = new Model3DGroup();
+
                 foreach (var filePath in dicomFiles)
                 {
-                    var dicomImage = DicomFile.Open(filePath).Dataset;
-                    var model = CreateModelFromImage(dicomImage);
-                    viewPort.Children.Add(model);
+                    var dicomFile = DicomFile.Open(filePath);
+                    var dicomImage = dicomFile.Dataset;
+
+                    var modelVisual3D = CreateModelFromImage(dicomImage);
+                    viewPort.Children.Add(modelVisual3D);
                 }
             }
             else
@@ -42,6 +46,7 @@ namespace BronchWPFApp
                 MessageBox.Show("В выбранной папке нет файлов DICOM.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
 
         private void BrowseButton_Click(object sender, RoutedEventArgs e)
         {
@@ -54,23 +59,44 @@ namespace BronchWPFApp
             }
         }
 
-        private ModelVisual3D CreateModelFromImage(DicomDataset dicomImage)
+      private bool successMessageShown = false;
+
+private ModelVisual3D CreateModelFromImage(DicomDataset dicomImage)
+{
+    try
+    {
+        var meshBuilder = new MeshBuilder();
+
+        // Ваш код для создания геометрии MeshBuilder на основе dicomImage
+        // Например, добавьте слои изображения в meshBuilder
+
+        var geometry = meshBuilder.ToMesh();
+        var material = new DiffuseMaterial(Brushes.Blue); // Замените на свой материал
+
+        var model = new GeometryModel3D
         {
-            var meshBuilder = new MeshBuilder();
+            Geometry = geometry,
+            Material = material
+        };
 
-            // Ваш код для создания геометрии MeshBuilder на основе dicomImage
-
-            var geometry = meshBuilder.ToMesh();
-            var material = new DiffuseMaterial(Brushes.Blue); // Замените на свой материал
-
-            var model = new GeometryModel3D
-            {
-                Geometry = geometry,
-                Material = material
-            };
-
-            return new ModelVisual3D { Content = model };
+        if (!successMessageShown)
+        {
+            MessageBox.Show($"DICOM-файл успешно обработан: {dicomImage.GetValues<string>(DicomTag.PatientName)}");
+            successMessageShown = true;
         }
+
+        return new ModelVisual3D { Content = model };
+    }
+    catch (Exception ex)
+    {
+        MessageBox.Show($"Ошибка при обработке DICOM-файла: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+        return null;
+    }
+}
+
+
+
+
 
 
     }
