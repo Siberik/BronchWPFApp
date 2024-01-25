@@ -1,13 +1,11 @@
-﻿using FellowOakDicom;
-using FellowOakDicom.Imaging;
-using HelixToolkit.Wpf;
-using System;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using System.Windows;
-using System.Windows.Media.Imaging;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
+using HelixToolkit.Wpf;
+using FellowOakDicom.Imaging;
+using FellowOakDicom;
 
 namespace BronchWPFApp
 {
@@ -21,18 +19,7 @@ namespace BronchWPFApp
 
         private void SetupViewport()
         {
-            // Используем DefaultLights для автоматического добавления света
-            viewPort.Children.Add(new DefaultLights());
-
-            // Настроим камеру
-            PerspectiveCamera camera = new PerspectiveCamera
-            {
-                Position = new Point3D(0, 0, 5),
-                LookDirection = new Vector3D(0, 0, -1),
-                UpDirection = new Vector3D(0, 1, 0),
-                FieldOfView = 60
-            };
-            viewPort.Camera = camera;
+            // Добавьте настройку камеры, света или другие параметры отображения, если необходимо
         }
 
         private void LoadDicomFiles(string folderPath)
@@ -43,29 +30,12 @@ namespace BronchWPFApp
             {
                 viewPort.Children.Clear();
 
-                var modelGroup = new Model3DGroup();
-
                 foreach (var filePath in dicomFiles)
                 {
-                    var dicomFile = DicomFile.Open(filePath);
-                    var image = new DicomImage(dicomFile.Dataset);
-
-                    var meshBuilder = new MeshBuilder();
-                    meshBuilder.AddBox(new Point3D(0, 0, 0), image.Width, image.Height, 1);
-
-                    var material = new DiffuseMaterial(Brushes.Blue); // Замените на свой материал
-
-                    var geometryModel3D = new GeometryModel3D
-                    {
-                        Geometry = meshBuilder.ToMesh(),
-                        Material = material
-                    };
-
-                    modelGroup.Children.Add(geometryModel3D);
+                    var dicomImage = DicomFile.Open(filePath).Dataset;
+                    var model = CreateModelFromImage(dicomImage);
+                    viewPort.Children.Add(model);
                 }
-
-                var modelVisual3D = new ModelVisual3D { Content = modelGroup };
-                viewPort.Children.Add(modelVisual3D);
             }
             else
             {
@@ -83,5 +53,25 @@ namespace BronchWPFApp
                 LoadDicomFiles(folderPath);
             }
         }
+
+        private ModelVisual3D CreateModelFromImage(DicomDataset dicomImage)
+        {
+            var meshBuilder = new MeshBuilder();
+
+            // Ваш код для создания геометрии MeshBuilder на основе dicomImage
+
+            var geometry = meshBuilder.ToMesh();
+            var material = new DiffuseMaterial(Brushes.Blue); // Замените на свой материал
+
+            var model = new GeometryModel3D
+            {
+                Geometry = geometry,
+                Material = material
+            };
+
+            return new ModelVisual3D { Content = model };
+        }
+
+
     }
 }
