@@ -12,16 +12,20 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="19*"/>
+                <ColumnDefinition Width="21*"/>
+            </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10">
+            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10,10,10,10" Grid.ColumnSpan="2">
                 <Button Content="Выбрать папку" Click="BrowseButton_Click"/>
             </StackPanel>
 
-            <HelixToolkit:HelixViewport3D x:Name="viewPort" Grid.Row="1" Background="WhiteSmoke"/>
+            <HelixToolkit:HelixViewport3D x:Name="viewPort" Grid.Row="1" Background="WhiteSmoke" Grid.ColumnSpan="2" RenderTransformOrigin="0.219,0.57"/>
         </Grid>
     </Grid>
 </Window>
