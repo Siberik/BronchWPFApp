@@ -3,7 +3,6 @@ using HelixToolkit.Wpf;
 using System;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
@@ -23,7 +22,7 @@ namespace BronchWPFApp
 
             // Инициализация таймера для очистки ресурсов каждые 10 секунд
             timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromSeconds(1);
+            timer.Interval = TimeSpan.FromSeconds(10);
             timer.Tick += Timer_Tick;
             timer.Start();
         }
@@ -48,8 +47,6 @@ namespace BronchWPFApp
 
             if (dicomFiles.Any())
             {
-                var modelGroup = new Model3DGroup();
-
                 foreach (var filePath in dicomFiles)
                 {
                     var dicomFile = DicomFile.Open(filePath);
@@ -68,7 +65,6 @@ namespace BronchWPFApp
             }
         }
 
-
         private ModelVisual3D CreateModelFromImage(DicomDataset dicomImage)
         {
             try
@@ -83,12 +79,7 @@ namespace BronchWPFApp
                 var pixelSpacingY = dicomImage.GetValue<double>(DicomTag.PixelSpacing, 1);
                 var sliceThickness = dicomImage.GetValue<double>(DicomTag.SliceThickness, 0);
 
-                // Log
-                Console.WriteLine($"Rows: {rows}, Columns: {columns}");
-                Console.WriteLine($"PixelSpacingX: {pixelSpacingX}, PixelSpacingY: {pixelSpacingY}");
-                Console.WriteLine($"SliceThickness: {sliceThickness}");
-
-                int groupSize = 5; // Задайте размер группы пикселей по вашему усмотрению
+                int groupSize = 5;
 
                 for (int x = 0; x < columns; x += groupSize)
                 {
@@ -114,17 +105,17 @@ namespace BronchWPFApp
                         var cubeGeometry = new MeshGeometry3D
                         {
                             Positions = new Point3DCollection
-                    {
-                        new Point3D(px, py, pz),
-                        new Point3D(px + groupSize * pixelSpacingX, py, pz),
-                        new Point3D(px, py + groupSize * pixelSpacingY, pz),
-                        new Point3D(px + groupSize * pixelSpacingX, py + groupSize * pixelSpacingY, pz)
-                    },
+                            {
+                                new Point3D(px, py, pz),
+                                new Point3D(px + groupSize * pixelSpacingX, py, pz),
+                                new Point3D(px, py + groupSize * pixelSpacingY, pz),
+                                new Point3D(px + groupSize * pixelSpacingX, py + groupSize * pixelSpacingY, pz)
+                            },
                             TriangleIndices = new Int32Collection
-                    {
-                        0, 1, 2,
-                        1, 3, 2
-                    }
+                            {
+                                0, 1, 2,
+                                1, 3, 2
+                            }
                         };
 
                         var cubeModel = new GeometryModel3D
@@ -156,9 +147,6 @@ namespace BronchWPFApp
                 return null;
             }
         }
-
-
-
 
         private void BrowseButton_Click(object sender, RoutedEventArgs e)
         {
