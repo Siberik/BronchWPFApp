@@ -8,18 +8,20 @@
         Title="Просмотр бронх" Height="450" Width="800">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="19*"/>
-            <ColumnDefinition Width="21*"/>
+            <ColumnDefinition Width="67*"/>
+            <ColumnDefinition Width="9*"/>
+            <ColumnDefinition Width="53*"/>
+            <ColumnDefinition Width="31*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10,10,10,10" Grid.ColumnSpan="2">
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10,10,10,10" Grid.ColumnSpan="4">
             <Button Content="Выбрать папку" Click="BrowseButton_Click"/>
         </StackPanel>
 
-        <HelixToolkit:HelixViewport3D x:Name="viewPort" Grid.Row="1" Background="WhiteSmoke" Grid.ColumnSpan="2" RenderTransformOrigin="0.219,0.57"/>
+        <HelixToolkit:HelixViewport3D x:Name="viewPort" Grid.Row="1" Background="Plum" Grid.ColumnSpan="4" RenderTransformOrigin="0.219,0.57"/>
     </Grid>
 </Window>
