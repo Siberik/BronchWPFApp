@@ -301,6 +301,18 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="Vintasoft.Imaging, Version=12.3.3.1, Culture=neutral, PublicKeyToken=e553c7d3e075f61c, processorArchitecture=MSIL">
+      <HintPath>packages\Vintasoft.Imaging.12.3.3.1\lib\net472\Vintasoft.Imaging.dll</HintPath>
+    </Reference>
+    <Reference Include="Vintasoft.Imaging.Dicom, Version=5.3.3.1, Culture=neutral, PublicKeyToken=e553c7d3e075f61c, processorArchitecture=MSIL">
+      <HintPath>packages\Vintasoft.Imaging.Dicom.5.3.3.1\lib\net472\Vintasoft.Imaging.Dicom.dll</HintPath>
+    </Reference>
+    <Reference Include="Vintasoft.Imaging.Dicom.Mpr, Version=5.3.3.1, Culture=neutral, PublicKeyToken=e553c7d3e075f61c, processorArchitecture=MSIL">
+      <HintPath>packages\Vintasoft.Imaging.Dicom.Mpr.5.3.3.1\lib\net472\Vintasoft.Imaging.Dicom.Mpr.dll</HintPath>
+    </Reference>
+    <Reference Include="Vintasoft.Shared, Version=4.1.1.1, Culture=neutral, PublicKeyToken=e553c7d3e075f61c, processorArchitecture=MSIL">
+      <HintPath>packages\Vintasoft.Shared.4.1.1.1\lib\net472\Vintasoft.Shared.dll</HintPath>
+    </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />

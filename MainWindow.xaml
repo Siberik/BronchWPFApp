@@ -5,23 +5,27 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:HelixToolkit="http://helix-toolkit.org/wpf"
         mc:Ignorable="d"
-        Title="Просмотр бронх" Height="450" Width="800">
-    <Grid>
+        Title="Просмотр бронх" Height="465" Width="800">
+    <Grid RenderTransformOrigin="0.6,0.378" Margin="0,0,0,4">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="67*"/>
             <ColumnDefinition Width="9*"/>
             <ColumnDefinition Width="53*"/>
-            <ColumnDefinition Width="31*"/>
+            <ColumnDefinition Width="27*"/>
+            <ColumnDefinition Width="0*"/>
+            <ColumnDefinition Width="0*"/>
+            <ColumnDefinition Width="4*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10,10,10,10" Grid.ColumnSpan="4">
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10,10,5,10" Grid.ColumnSpan="4">
             <Button Content="Выбрать папку" Click="BrowseButton_Click"/>
         </StackPanel>
 
-        <HelixToolkit:HelixViewport3D x:Name="viewPort" Grid.Row="1" Background="Plum" Grid.ColumnSpan="4" RenderTransformOrigin="0.219,0.57"/>
+        <!-- Уберите x:Name="viewPort" из HelixViewport3D -->
+        <HelixToolkit:HelixViewport3D Name="viewPort" Grid.Row="1" Background="Plum" Grid.ColumnSpan="7" RenderTransformOrigin="0.219,0.57" Height="405" VerticalAlignment="Center"/>
     </Grid>
 </Window>

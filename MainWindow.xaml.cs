@@ -4,9 +4,10 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Windows;
-using System.Windows.Media;
 using System.Windows.Media.Media3D;
+using System.Windows.Media;
 using System.Windows.Threading;
+using SharpDX;
 
 namespace BronchWPFApp
 {
@@ -72,61 +73,27 @@ namespace BronchWPFApp
                 var modelGroup = new Model3DGroup();
 
                 // Получаем данные изображения
-                var pixels = dicomImage.GetValues<ushort>(DicomTag.PixelData);
                 var rows = dicomImage.GetValue<int>(DicomTag.Rows, 0);
                 var columns = dicomImage.GetValue<int>(DicomTag.Columns, 0);
                 var pixelSpacingX = dicomImage.GetValue<double>(DicomTag.PixelSpacing, 0);
                 var pixelSpacingY = dicomImage.GetValue<double>(DicomTag.PixelSpacing, 1);
-                var sliceThickness = dicomImage.GetValue<double>(DicomTag.SliceThickness, 0);
 
-                int groupSize = 5;
+                // Создаем единичный параллелепипед для представления DICOM-изображения
+                double width = columns * pixelSpacingX;
+                double height = rows * pixelSpacingY;
+                double depth = ushort.MaxValue / 1000.0; // Значение, представляющее максимальное значение пикселя
 
-                for (int x = 0; x < columns; x += groupSize)
+                var meshBuilder = new MeshBuilder();
+                meshBuilder.AddBox(new Rect3D(0, 0, 0, width, height, depth));
+
+                // Создаем поверхность
+                var surfaceModel = new GeometryModel3D
                 {
-                    for (int y = 0; y < rows; y += groupSize)
-                    {
-                        double px = x * pixelSpacingX;
-                        double py = y * pixelSpacingY;
-                        double pz = sliceThickness;
+                    Geometry = meshBuilder.ToMesh(),
+                    Material = new DiffuseMaterial(Brushes.Blue)
+                };
 
-                        double averageHeight = 0;
-
-                        for (int i = 0; i < groupSize && (x + i) < columns; i++)
-                        {
-                            for (int j = 0; j < groupSize && (y + j) < rows; j++)
-                            {
-                                averageHeight += pixels[(y + j) * columns + (x + i)] / 1000.0;
-                            }
-                        }
-
-                        averageHeight /= groupSize * groupSize;
-
-                        // Создаем куб
-                        var cubeGeometry = new MeshGeometry3D
-                        {
-                            Positions = new Point3DCollection
-                            {
-                                new Point3D(px, py, pz),
-                                new Point3D(px + groupSize * pixelSpacingX, py, pz),
-                                new Point3D(px, py + groupSize * pixelSpacingY, pz),
-                                new Point3D(px + groupSize * pixelSpacingX, py + groupSize * pixelSpacingY, pz)
-                            },
-                            TriangleIndices = new Int32Collection
-                            {
-                                0, 1, 2,
-                                1, 3, 2
-                            }
-                        };
-
-                        var cubeModel = new GeometryModel3D
-                        {
-                            Geometry = cubeGeometry,
-                            Material = new DiffuseMaterial(Brushes.Blue)
-                        };
-
-                        modelGroup.Children.Add(cubeModel);
-                    }
-                }
+                modelGroup.Children.Add(surfaceModel);
 
                 Console.WriteLine("Creating ModelVisual3D...");
                 var modelVisual3D = new ModelVisual3D { Content = modelGroup };
@@ -147,6 +114,16 @@ namespace BronchWPFApp
                 return null;
             }
         }
+
+
+
+
+
+
+
+
+
+
 
         private void BrowseButton_Click(object sender, RoutedEventArgs e)
         {
